@@ -1,7 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Users,
   UserCog,
   BookOpen,
   Settings,
@@ -17,7 +16,6 @@ import { useState } from 'react';
 const navItems = [
   { title: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
   { title: 'Classes', icon: School, path: '/classes' },
-  { title: 'Étudiants', icon: Users, path: '/students' },
   { title: 'Personnel', icon: UserCog, path: '/staff' },
   { title: 'Cours', icon: BookOpen, path: '/courses' },
   { title: 'Paramètres', icon: Settings, path: '/settings' },

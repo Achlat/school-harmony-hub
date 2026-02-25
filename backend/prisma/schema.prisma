@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SCHOOL — entité racine (multi-tenant : chaque école est isolée)
+// ─────────────────────────────────────────────────────────────────────────────
+model School {
+  id           String   @id @default(cuid())
+  name         String
+  address      String   @db.Text
+  phone        String
+  email        String   @unique
+  logo         String?  @db.Text
+  plan         String   @default("starter")
+  maxUsers     Int      @default(10)
+  academicYear String   @default("2024-2025")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  users         User[]
+  classes       Class[]
+  students      Student[]
+  staff         Staff[]
+  courses       Course[]
+  notifications Notification[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// USER — administrateurs / enseignants ayant accès à l'application
+// ─────────────────────────────────────────────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      String   @default("admin") // admin | teacher
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CLASS — classe scolaire (6ème A, 5ème B, …)
+// ─────────────────────────────────────────────────────────────────────────────
+model Class {
+  id          String    @id @default(cuid())
+  name        String
+  level       String
+  mainTeacher String?
+  schoolId    String
+  school      School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  students    Student[]
+  courses     Course[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STUDENT — élève inscrit dans une classe
+// ─────────────────────────────────────────────────────────────────────────────
+model Student {
+  id                    String   @id @default(cuid())
+  firstName             String
+  lastName              String
+  dateOfBirth           String
+  gender                String   // M | F
+  classId               String
+  class                 Class    @relation(fields: [classId], references: [id])
+  address               String   @db.Text
+  phone                 String
+  email                 String?
+  emergencyContactName  String
+  emergencyContactPhone String
+  status                String   @default("active") // active | inactive
+  enrollmentDate        String
+  photo                 String?  @db.Text
+  schoolId              String
+  school                School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STAFF — membre du personnel (enseignant, admin, support)
+// ─────────────────────────────────────────────────────────────────────────────
+model Staff {
+  id              String   @id @default(cuid())
+  firstName       String
+  lastName        String
+  role            String   // teacher | admin | support
+  email           String
+  phone           String
+  address         String   @db.Text
+  hireDate        String
+  status          String   @default("active") // active | inactive
+  subjects        String   @default("[]") @db.Text  // JSON array stocké en texte
+  assignedClasses String   @default("[]") @db.Text  // JSON array stocké en texte
+  photo           String?  @db.Text
+  schoolId        String
+  school          School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  courses         Course[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COURSE — cours planifié (matière, classe, enseignant, horaire)
+// ─────────────────────────────────────────────────────────────────────────────
+model Course {
+  id        String   @id @default(cuid())
+  subject   String
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  teacherId String
+  teacher   Staff    @relation(fields: [teacherId], references: [id])
+  room      String
+  dayOfWeek Int      // 0=Lun, 1=Mar, 2=Mer, 3=Jeu, 4=Ven
+  startTime String   // format HH:MM
+  endTime   String   // format HH:MM
+  color     String?
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTIFICATION — alertes et messages système
+// ─────────────────────────────────────────────────────────────────────────────
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String   @db.Text
+  type      String   @default("info") // info | success | warning | error
+  read      Boolean  @default(false)
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

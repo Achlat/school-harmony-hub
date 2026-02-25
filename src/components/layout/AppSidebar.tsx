@@ -7,6 +7,7 @@ import {
   Settings,
   Search,
   GraduationCap,
+  School,
   Menu,
   X,
 } from 'lucide-react';
@@ -15,6 +16,7 @@ import { useState } from 'react';
 
 const navItems = [
   { title: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
+  { title: 'Classes', icon: School, path: '/classes' },
   { title: 'Étudiants', icon: Users, path: '/students' },
   { title: 'Personnel', icon: UserCog, path: '/staff' },
   { title: 'Cours', icon: BookOpen, path: '/courses' },

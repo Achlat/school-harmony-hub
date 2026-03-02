@@ -80,8 +80,8 @@ export function AppSidebar() {
             AD
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-medium text-sidebar-accent-foreground">Admin</span>
-            <span className="text-[11px] text-sidebar-muted">admin@ecole.ci</span>
+            <span className="text-sm font-medium text-sidebar-accent-foreground">Administrateur</span>
+            <span className="text-[11px] text-sidebar-muted">Gestion de l'établissement</span>
           </div>
         </div>
       </div>

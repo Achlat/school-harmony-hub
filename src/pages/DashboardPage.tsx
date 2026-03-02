@@ -16,6 +16,13 @@ const COLORS = [
   'hsl(200, 70%, 45%)',
 ];
 
+const TYPE_COLORS: Record<string, string> = {
+  success: 'bg-success',
+  warning: 'bg-warning',
+  info: 'bg-info',
+  error: 'bg-destructive',
+};
+
 export default function DashboardPage() {
   const navigate = useNavigate();
 
@@ -23,16 +30,17 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <PageHeader title="Tableau de bord" description="Vue d'ensemble de votre établissement" />
 
-      {/* Stats */}
+      {/* Statistiques */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard
-          title="Étudiants"
+          title="Élèves"
           value={mockDashboardStats.totalStudents}
           icon={Users}
           trend="+12 ce mois"
           trendUp
-          className="cursor-pointer hover:shadow-md transition-shadow"
           iconClassName="bg-primary/10 text-primary"
+          className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => navigate('/classes')}
         />
         <StatsCard
           title="Enseignants"
@@ -40,6 +48,7 @@ export default function DashboardPage() {
           icon={UserCog}
           iconClassName="bg-accent/10 text-accent"
           className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => navigate('/staff')}
         />
         <StatsCard
           title="Cours actifs"
@@ -47,6 +56,7 @@ export default function DashboardPage() {
           icon={BookOpen}
           iconClassName="bg-warning/10 text-warning"
           className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => navigate('/courses')}
         />
         <StatsCard
           title="Classes"
@@ -54,10 +64,11 @@ export default function DashboardPage() {
           icon={School}
           iconClassName="bg-success/10 text-success"
           className="cursor-pointer hover:shadow-md transition-shadow"
+          onClick={() => navigate('/classes')}
         />
       </div>
 
-      {/* Charts */}
+      {/* Graphiques */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Bar chart */}
         <div className="rounded-xl border border-border bg-card p-5 shadow-sm animate-fade-in">
@@ -83,14 +94,14 @@ export default function DashboardPage() {
         {/* Pie chart */}
         <div className="rounded-xl border border-border bg-card p-5 shadow-sm animate-fade-in">
           <h3 className="mb-4 text-sm font-semibold text-card-foreground">Cours par matière</h3>
-          <ResponsiveContainer width="100%" height={260}>
+          <ResponsiveContainer width="100%" height={220}>
             <PieChart>
               <Pie
                 data={coursesPerSubject}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={100}
+                innerRadius={55}
+                outerRadius={90}
                 dataKey="count"
                 nameKey="name"
                 paddingAngle={3}
@@ -112,7 +123,10 @@ export default function DashboardPage() {
           <div className="mt-2 flex flex-wrap gap-3 justify-center">
             {coursesPerSubject.map((item, i) => (
               <div key={item.name} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                <span
+                  className="h-2.5 w-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: COLORS[i % COLORS.length] }}
+                />
                 {item.name}
               </div>
             ))}
@@ -120,7 +134,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Notifications */}
+      {/* Notifications récentes */}
       <div className="rounded-xl border border-border bg-card p-5 shadow-sm animate-fade-in">
         <h3 className="mb-4 text-sm font-semibold text-card-foreground">Notifications récentes</h3>
         <div className="space-y-3">
@@ -132,20 +146,17 @@ export default function DashboardPage() {
                 n.read ? 'bg-transparent' : 'bg-muted/50'
               )}
             >
-              <div
+              <span
                 className={cn(
-                  'mt-0.5 h-2 w-2 shrink-0 rounded-full',
-                  n.type === 'success' && 'bg-success',
-                  n.type === 'warning' && 'bg-warning',
-                  n.type === 'info' && 'bg-info',
-                  n.type === 'error' && 'bg-destructive'
+                  'mt-1.5 h-2 w-2 shrink-0 rounded-full',
+                  TYPE_COLORS[n.type] ?? 'bg-muted-foreground'
                 )}
               />
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-card-foreground">{n.title}</p>
                 <p className="text-xs text-muted-foreground">{n.message}</p>
               </div>
-              <span className="ml-auto shrink-0 text-[11px] text-muted-foreground">
+              <span className="ml-auto shrink-0 text-[11px] text-muted-foreground whitespace-nowrap">
                 {new Date(n.createdAt).toLocaleDateString('fr-FR')}
               </span>
             </div>

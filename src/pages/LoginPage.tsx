@@ -15,8 +15,8 @@ export default function LoginPage() {
 
   const validate = () => {
     const errs: typeof errors = {};
-    if (!email.trim()) errs.email = 'L\'email est requis';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = 'Email invalide';
+    if (!email.trim()) errs.email = "L'email est requis";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = 'Adresse email invalide';
     if (!password) errs.password = 'Le mot de passe est requis';
     else if (password.length < 6) errs.password = 'Minimum 6 caractères';
     setErrors(errs);
@@ -27,7 +27,6 @@ export default function LoginPage() {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setLoading(false);
       navigate('/dashboard');
@@ -36,7 +35,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left panel */}
+      {/* Panneau gauche */}
       <div className="hidden lg:flex lg:w-1/2 bg-primary items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent opacity-90" />
         <div className="relative z-10 max-w-md text-center px-8">
@@ -48,15 +47,14 @@ export default function LoginPage() {
             Plateforme de gestion scolaire moderne et intuitive pour votre établissement.
           </p>
         </div>
-        {/* Decorative circles */}
         <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-primary-foreground/5" />
         <div className="absolute -top-10 -right-10 h-48 w-48 rounded-full bg-primary-foreground/5" />
       </div>
 
-      {/* Right panel - Form */}
+      {/* Panneau droit — Formulaire */}
       <div className="flex w-full lg:w-1/2 items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm animate-fade-in">
-          {/* Mobile logo */}
+          {/* Logo mobile */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
               <GraduationCap className="h-5 w-5 text-primary-foreground" />
@@ -66,7 +64,7 @@ export default function LoginPage() {
 
           <h2 className="text-2xl font-bold text-foreground">Connexion</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Connectez-vous à votre espace école
+            Connectez-vous à votre espace de gestion
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
@@ -75,7 +73,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@ecole.ci"
+                placeholder="admin@votre-etablissement.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={errors.email ? 'border-destructive' : ''}
@@ -86,12 +84,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Mot de passe</Label>
-                <button type="button" className="text-xs text-primary hover:underline">
-                  Mot de passe oublié ?
-                </button>
-              </div>
+              <Label htmlFor="password">Mot de passe</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -115,9 +108,13 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Connexion...' : 'Se connecter'}
+              {loading ? 'Connexion en cours...' : 'Se connecter'}
             </Button>
           </form>
+
+          <p className="mt-6 text-center text-xs text-muted-foreground">
+            En cas de problème de connexion, contactez votre administrateur.
+          </p>
         </div>
       </div>
     </div>

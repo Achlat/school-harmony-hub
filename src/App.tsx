@@ -9,7 +9,10 @@ import DashboardPage from "./pages/DashboardPage";
 import StaffPage from "./pages/StaffPage";
 import CoursesPage from "./pages/CoursesPage";
 import ClassesPage from "./pages/ClassesPage";
-import SettingsPage from "./pages/SettingsPage";
+import InvoicesPage from "./pages/InvoicesPage";
+import PaymentsPage from "./pages/PaymentsPage";
+import FinancePage from "./pages/FinancePage";
+import CommunicationPage from "./pages/CommunicationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +32,10 @@ const App = () => (
             <Route path="/students" element={<Navigate to="/classes" replace />} />
             <Route path="/staff" element={<StaffPage />} />
             <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/invoices" element={<InvoicesPage />} />
+            <Route path="/payments" element={<PaymentsPage />} />
+            <Route path="/finance" element={<FinancePage />} />
+            <Route path="/communication" element={<CommunicationPage />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

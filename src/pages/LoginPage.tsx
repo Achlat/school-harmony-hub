@@ -27,7 +27,6 @@ export default function LoginPage() {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    // Simulate API call
     setTimeout(() => {
       setLoading(false);
       navigate('/dashboard');
@@ -43,77 +42,47 @@ export default function LoginPage() {
           <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-foreground/10 backdrop-blur">
             <GraduationCap className="h-10 w-10 text-primary-foreground" />
           </div>
-          <h1 className="text-4xl font-bold text-primary-foreground mb-4">ScolarPro</h1>
+          <h1 className="text-4xl font-bold text-primary-foreground mb-4">AchScholar</h1>
           <p className="text-lg text-primary-foreground/80">
-            Plateforme de gestion scolaire moderne et intuitive pour votre établissement.
+            Plateforme de gestion scolaire moderne et intuitive pour votre établissement au Togo.
           </p>
         </div>
-        {/* Decorative circles */}
         <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-primary-foreground/5" />
         <div className="absolute -top-10 -right-10 h-48 w-48 rounded-full bg-primary-foreground/5" />
       </div>
 
-      {/* Right panel - Form */}
+      {/* Right panel */}
       <div className="flex w-full lg:w-1/2 items-center justify-center px-6 py-12">
         <div className="w-full max-w-sm animate-fade-in">
-          {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 lg:hidden">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
               <GraduationCap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">ScolarPro</span>
+            <span className="text-xl font-bold text-foreground">AchScholar</span>
           </div>
 
           <h2 className="text-2xl font-bold text-foreground">Connexion</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Connectez-vous à votre espace école
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">Connectez-vous à votre espace école</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">Adresse email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@ecole.ci"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={errors.email ? 'border-destructive' : ''}
-              />
-              {errors.email && (
-                <p className="text-xs text-destructive">{errors.email}</p>
-              )}
+              <Input id="email" type="email" placeholder="admin@achscholar.tg" value={email} onChange={(e) => setEmail(e.target.value)} className={errors.email ? 'border-destructive' : ''} />
+              {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
             </div>
-
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Mot de passe</Label>
-                <button type="button" className="text-xs text-primary hover:underline">
-                  Mot de passe oublié ?
-                </button>
+                <button type="button" className="text-xs text-primary hover:underline">Mot de passe oublié ?</button>
               </div>
               <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
+                <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} className={errors.password ? 'border-destructive pr-10' : 'pr-10'} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-xs text-destructive">{errors.password}</p>
-              )}
+              {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </div>
-
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Connexion...' : 'Se connecter'}
             </Button>

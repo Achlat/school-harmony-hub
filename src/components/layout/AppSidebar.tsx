@@ -3,27 +3,41 @@ import {
   LayoutDashboard,
   UserCog,
   BookOpen,
-  Settings,
   Search,
   GraduationCap,
   School,
   Menu,
   X,
+  Receipt,
+  CreditCard,
+  PieChart,
+  MessageSquare,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const navItems = [
   { title: 'Tableau de bord', icon: LayoutDashboard, path: '/dashboard' },
-  { title: 'Classes', icon: School, path: '/classes' },
+  { title: 'Classes & Élèves', icon: School, path: '/classes' },
   { title: 'Personnel', icon: UserCog, path: '/staff' },
   { title: 'Cours', icon: BookOpen, path: '/courses' },
-  { title: 'Paramètres', icon: Settings, path: '/settings' },
+  { title: 'Facturation', icon: Receipt, path: '/invoices' },
+  { title: 'Paiements', icon: CreditCard, path: '/payments' },
+  { title: 'Finance', icon: PieChart, path: '/finance' },
+  { title: 'Communication', icon: MessageSquare, path: '/communication' },
 ];
 
 export function AppSidebar() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+
+  useEffect(() => {
+    if (dark) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+  }, [dark]);
 
   const sidebarContent = (
     <>
@@ -51,7 +65,7 @@ export function AppSidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 overflow-y-auto space-y-1 px-3">
         {navItems.map((item) => {
           const isActive = location.pathname.startsWith(item.path);
           return (
@@ -74,7 +88,14 @@ export function AppSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-sidebar-border p-4">
+      <div className="border-t border-sidebar-border p-4 space-y-3">
+        <button
+          onClick={() => setDark(!dark)}
+          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+        >
+          {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          <span>{dark ? 'Mode clair' : 'Mode sombre'}</span>
+        </button>
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-accent text-xs font-semibold text-sidebar-accent-foreground">
             AD

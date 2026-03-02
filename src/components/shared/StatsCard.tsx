@@ -9,11 +9,12 @@ interface StatsCardProps {
   trendUp?: boolean;
   className?: string;
   iconClassName?: string;
+  onClick?: () => void;
 }
 
-export function StatsCard({ title, value, icon: Icon, trend, trendUp, className, iconClassName }: StatsCardProps) {
+export function StatsCard({ title, value, icon: Icon, trend, trendUp, className, iconClassName, onClick }: StatsCardProps) {
   return (
-    <div className={cn('rounded-xl bg-card p-5 border border-border shadow-sm animate-fade-in', className)}>
+    <div className={cn('rounded-xl bg-card p-5 border border-border shadow-sm animate-fade-in', className)} onClick={onClick}>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>

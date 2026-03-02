@@ -82,7 +82,6 @@ export default function LoginPage() {
                 <p className="text-xs text-destructive">{errors.email}</p>
               )}
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Mot de passe</Label>
               <div className="relative">
@@ -106,7 +105,6 @@ export default function LoginPage() {
                 <p className="text-xs text-destructive">{errors.password}</p>
               )}
             </div>
-
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? 'Connexion en cours...' : 'Se connecter'}
             </Button>

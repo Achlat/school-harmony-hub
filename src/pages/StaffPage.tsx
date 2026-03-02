@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable } from '@/components/shared/DataTable';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { ExportButtons } from '@/components/shared/ExportButtons';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -12,12 +13,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { mockStaff } from '@/data/mock';
 import type { Staff } from '@/types';
+import { exportToPDF, exportToXLSX } from '@/lib/export';
 
 const ROLE_LABELS: Record<string, string> = {
   teacher: 'Enseignant',
   admin: 'Administratif',
   support: 'Support',
 };
+
+const roleLabel = (r: string) => ROLE_LABELS[r] ?? r;
 
 const EMPTY_FORM = {
   firstName: '',
@@ -90,23 +94,43 @@ export default function StaffPage() {
 
   const filtered = roleFilter === 'all' ? staff : staff.filter(s => s.role === roleFilter);
 
+  const handleExportPDF = () => {
+    exportToPDF({
+      title: 'Liste du personnel',
+      headers: ['Nom', 'Rôle', 'Email', 'Téléphone', 'Statut'],
+      rows: filtered.map(s => [
+        `${s.lastName} ${s.firstName}`,
+        roleLabel(s.role),
+        s.email,
+        s.phone,
+        s.status === 'active' ? 'Actif' : 'Inactif',
+      ]),
+      filename: 'personnel',
+    });
+  };
+
+  const handleExportXLSX = () => {
+    exportToXLSX({
+      title: 'Personnel',
+      headers: ['Nom', 'Prénom', 'Rôle', 'Email', 'Téléphone', 'Statut'],
+      rows: filtered.map(s => [s.lastName, s.firstName, roleLabel(s.role), s.email, s.phone, s.status]),
+      filename: 'personnel',
+    });
+  };
+
   const columns = [
     {
       key: 'name',
       header: 'Nom',
       render: (s: Staff) => (
-        <span className="font-medium text-card-foreground">
-          {s.lastName} {s.firstName}
-        </span>
+        <span className="font-medium text-card-foreground">{s.lastName} {s.firstName}</span>
       ),
     },
     {
       key: 'role',
       header: 'Rôle',
       render: (s: Staff) => (
-        <Badge variant="secondary" className="text-xs">
-          {ROLE_LABELS[s.role] ?? s.role}
-        </Badge>
+        <Badge variant="secondary" className="text-xs">{roleLabel(s.role)}</Badge>
       ),
     },
     { key: 'email', header: 'Email', className: 'hidden md:table-cell' },
@@ -127,18 +151,10 @@ export default function StaffPage() {
       header: '',
       render: (s: Staff) => (
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={e => { e.stopPropagation(); openEdit(s); }}
-          >
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openEdit(s); }}>
             <Edit className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={e => { e.stopPropagation(); setDeleteTarget(s); }}
-          >
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); setDeleteTarget(s); }}>
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
@@ -149,9 +165,8 @@ export default function StaffPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Personnel" description="Gestion du personnel de l'établissement">
-        <Button onClick={openAdd}>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter
-        </Button>
+        <ExportButtons onPDF={handleExportPDF} onXLSX={handleExportXLSX} />
+        <Button onClick={openAdd}><Plus className="mr-2 h-4 w-4" /> Ajouter</Button>
       </PageHeader>
 
       {/* Role filter */}
@@ -181,12 +196,9 @@ export default function StaffPage() {
           <DialogHeader>
             <DialogTitle>{editItem ? 'Modifier le membre' : 'Ajouter un membre'}</DialogTitle>
           </DialogHeader>
-
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label>
-                Prénom <span className="text-destructive">*</span>
-              </Label>
+              <Label>Prénom <span className="text-destructive">*</span></Label>
               <Input
                 value={form.firstName}
                 onChange={e => setForm({ ...form, firstName: e.target.value })}
@@ -194,9 +206,7 @@ export default function StaffPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label>
-                Nom <span className="text-destructive">*</span>
-              </Label>
+              <Label>Nom <span className="text-destructive">*</span></Label>
               <Input
                 value={form.lastName}
                 onChange={e => setForm({ ...form, lastName: e.target.value })}
@@ -205,10 +215,7 @@ export default function StaffPage() {
             </div>
             <div className="space-y-2">
               <Label>Rôle</Label>
-              <Select
-                value={form.role}
-                onValueChange={v => setForm({ ...form, role: v as Staff['role'] })}
-              >
+              <Select value={form.role} onValueChange={v => setForm({ ...form, role: v as Staff['role'] })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="teacher">Enseignant</SelectItem>
@@ -218,9 +225,7 @@ export default function StaffPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>
-                Email <span className="text-destructive">*</span>
-              </Label>
+              <Label>Email <span className="text-destructive">*</span></Label>
               <Input
                 type="email"
                 value={form.email}
@@ -238,10 +243,7 @@ export default function StaffPage() {
             </div>
             <div className="space-y-2">
               <Label>Statut</Label>
-              <Select
-                value={form.status}
-                onValueChange={v => setForm({ ...form, status: v as 'active' | 'inactive' })}
-              >
+              <Select value={form.status} onValueChange={v => setForm({ ...form, status: v as 'active' | 'inactive' })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="active">Actif</SelectItem>
@@ -259,17 +261,11 @@ export default function StaffPage() {
             </div>
           </div>
 
-          {formError && (
-            <p className="text-sm text-destructive">{formError}</p>
-          )}
+          {formError && <p className="text-sm text-destructive">{formError}</p>}
 
           <div className="mt-2 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setIsFormOpen(false)}>
-              Annuler
-            </Button>
-            <Button onClick={handleSave}>
-              {editItem ? 'Enregistrer' : 'Ajouter'}
-            </Button>
+            <Button variant="outline" onClick={() => setIsFormOpen(false)}>Annuler</Button>
+            <Button onClick={handleSave}>{editItem ? 'Enregistrer' : 'Ajouter'}</Button>
           </div>
         </DialogContent>
       </Dialog>

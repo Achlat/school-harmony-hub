@@ -61,7 +61,7 @@ export interface Course {
   teacherId: string;
   teacherName?: string;
   room: string;
-  dayOfWeek: number; // 0=Mon, 1=Tue, etc.
+  dayOfWeek: number;
   startTime: string;
   endTime: string;
   color?: string;
@@ -83,4 +83,49 @@ export interface DashboardStats {
   totalTeachers: number;
   totalCourses: number;
   totalClasses: number;
+}
+
+// Invoice
+export type InvoiceStatus = 'paid' | 'partial' | 'unpaid';
+export type InvoiceCategory = 'scolarite' | 'inscription' | 'cantine' | 'transport' | 'autre';
+
+export interface Invoice {
+  id: string;
+  reference: string;
+  studentId: string;
+  studentName: string;
+  classId: string;
+  className: string;
+  category: InvoiceCategory;
+  period: string;
+  amount: number;
+  paidAmount: number;
+  status: InvoiceStatus;
+  issuedDate: string;
+  dueDate: string;
+  description?: string;
+}
+
+// Payment
+export interface Payment {
+  id: string;
+  invoiceId: string;
+  invoiceRef: string;
+  studentName: string;
+  className: string;
+  amount: number;
+  date: string;
+  method: 'cash' | 'mobile_money' | 'bank' | 'cheque';
+  note?: string;
+}
+
+// Message
+export interface Message {
+  id: string;
+  from: string;
+  to: string;
+  subject: string;
+  body: string;
+  read: boolean;
+  createdAt: string;
 }
